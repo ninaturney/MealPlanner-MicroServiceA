@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        label, textarea, input { display: block; margin-top: 10px; }
+        button { margin-top: 15px; padding: 10px; }
+        .result { margin-top: 20px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Meal Planner Microservice Test</h1>
+    <p>Enter a JSON array of recipes to get a shopping list of ingredients.</p>
+    
+    <label for="recipeInput">Recipes (JSON format):</label>
+    <textarea id="recipeInput" rows="10" cols="50">
+{
+  "recipes": [
+    {
+      "name": "Carrot Salad",
+      "ingredients": [
+        { "ingredient": "carrot", "quantity": 1, "unit": "cup" },
+        { "ingredient": "onion", "quantity": 0.5, "unit": "cup" }
+      ]
+    },
+    {
+      "name": "Carrot Soup",
+      "ingredients": [
+        { "ingredient": "carrot", "quantity": 2, "unit": "carrot" },
+        { "ingredient": "onion", "quantity": 1, "unit": "onion" }
+      ]
+    }
+  ]
+}
+    </textarea>
+
+    <button onclick="getShoppingList()">Generate Shopping List</button>
+
+    <div class="result">
+        <h3>Shopping List:</h3>
+        <pre id="output"></pre>
+    </div>
+    
+    <div class="error" id="error"></div>
+
+    <script>
+        async function getShoppingList() {
+            const recipeData = document.getElementById("recipeInput").value;
+            const output = document.getElementById("output");
+            const error = document.getElementById("error");
+            
+            output.textContent = '';
+            error.textContent = '';
+            
+            try {
+                const response = await fetch("http://localhost:3000/generate-shopping-list", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: recipeData
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch shopping list. Please check your input.");
+                }
+
+                const result = await response.json();
+                
+                // Display the result in a readable format
+                output.textContent = JSON.stringify(result.shoppingList, null, 2);
+            } catch (err) {
+                error.textContent = err.message;
+            }
+        }
+    </script>
+</body>
+</html>
