@@ -2,6 +2,6 @@
 Meal Planner Microservice "A" Implementation Code 
 ##Requesting Data: 
 
-##Receiving Data
+## Receiving Data
 
-##UML Sequence Diagram 
+## UML Sequence Diagram 
