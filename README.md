@@ -58,7 +58,22 @@ const response = await fetch(microserviceURL, {
 
 ```mermaid
 sequenceDiagram
-  participant Client
-  participant MicroServer
+    participant User as User
+    participant Client as Test Client (Web Page)
+    participant Server as Meal Planner Microserver
+
+    User ->> Client: Enter recipe data in JSON format
+    Client ->> Server: POST /generate-shopping-list (JSON body)
+    alt Valid JSON Input
+        Server ->> Server: Validate input
+        Server ->> Server: Process recipes and ingredients
+        Server ->> Server: Generate shopping list
+        Server -->> Client: Return shopping list (200 OK)
+        Client -->> User: Display shopping list
+    else Invalid JSON Input
+        Server ->> Server: Validate input
+        Server -->> Client: Return error message (400 Bad Request)
+        Client -->> User: Display error message
+    end
 ```
 
